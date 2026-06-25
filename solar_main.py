@@ -78,10 +78,13 @@ def build_orbits():
             line = draw_static_orbit(space, parent_star, planet)
             orbit_lines.append(line)
 
-    # 2. Строим орбиты звезд вокруг центра масс, ТОЛЬКО если они реально движутся (двойная звезда)
+    # 2. Строим орбиты звезд вокруг центра масс, только если они реально движутся (двойная звезда)
     if len(stars) >= 2:
-        # Проверяем, задана ли хоть какой-то звезде начальная скорость
-        any_star_moving = any(star.Vx != 0 or star.Vy != 0 for star in stars)
+        # Учитываем Vx/Vy (до первого шага симуляции) и omega (после того, как симуляция уже запущена)
+        any_star_moving = any(
+            star.Vx != 0 or star.Vy != 0 or getattr(star, 'omega', 0.0) != 0.0
+            for star in stars
+        )
         if any_star_moving:
             total_mass = sum(star.m for star in stars)
             if total_mass > 0:
