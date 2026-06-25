@@ -16,13 +16,13 @@ class SpaceBody:
         self.image = None
 
     def move(self, dt):
-        """Перемещает тело по методу Эйлера на основе действующих сил."""
+        """Перемещает тело по полунеявному методу Эйлера на основе действующих сил."""
         ax = self.Fx / self.m
         ay = self.Fy / self.m
-        self.x += self.Vx * dt
-        self.y += self.Vy * dt
         self.Vx += ax * dt
         self.Vy += ay * dt
+        self.x += self.Vx * dt
+        self.y += self.Vy * dt
 
 
 class Star(SpaceBody):

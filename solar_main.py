@@ -69,6 +69,7 @@ def build_orbits():
     stars = [obj for obj in space_objects if obj.type == "star"]
     planets = [obj for obj in space_objects if obj.type == "planet"]
 
+    # 1. Строим орбиты планет вокруг их родительских звёзд
     for planet in planets:
         parent_star = planet.parent_star
         if parent_star is None and stars:
@@ -76,6 +77,19 @@ def build_orbits():
         if parent_star is not None:
             line = draw_static_orbit(space, parent_star, planet)
             orbit_lines.append(line)
+
+    # 2. Строим орбиты звезд вокруг центра масс, ТОЛЬКО если они реально движутся (двойная звезда)
+    if len(stars) >= 2:
+        # Проверяем, задана ли хоть какой-то звезде начальная скорость
+        any_star_moving = any(star.Vx != 0 or star.Vy != 0 for star in stars)
+        if any_star_moving:
+            total_mass = sum(star.m for star in stars)
+            if total_mass > 0:
+                cx = sum(star.x * star.m for star in stars) / total_mass
+                cy = sum(star.y * star.m for star in stars) / total_mass
+                for star in stars:
+                    line = draw_barycentric_orbit(space, star, cx, cy)
+                    orbit_lines.append(line)
 
 
 def load_system_from_file(in_filename):

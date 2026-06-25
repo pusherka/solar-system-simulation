@@ -51,7 +51,23 @@ def calculate_scale_factor(space_objects):
     )
     print('Scale factor:', scale_factor)
 
+def draw_barycentric_orbit(space, body, cx, cy):
+    """Рисует круговую орбиту космического тела вокруг центра масс (cx, cy)."""
+    r_physics = math.hypot(body.x - cx, body.y - cy)
+    r_pixels = int(r_physics * scale_factor)
 
+    scx = scale_x(cx)
+    scy = scale_y(cy)
+
+    orbit_id = space.create_oval(
+        scx - r_pixels, scy - r_pixels,
+        scx + r_pixels, scy + r_pixels,
+        outline="#444444",
+        dash=(2, 4),
+        width=1
+    )
+    space.tag_lower(orbit_id)
+    return orbit_id
 def scale_x(x):
     return int((x - center_x) * scale_factor) + window_width // 2
 
